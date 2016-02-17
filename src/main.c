@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "server.h"
 
 typedef int (*FP)(int number);
 
@@ -26,6 +27,10 @@ int main(int argc, char** argv) {
   printf("1 + 1 = %d\n", addOne(1));
 
   dlclose(libHandle);
+
+  int listenSocketFileDescriptor = openListenSocket("10000");
+
+  handleRequests(listenSocketFileDescriptor);
 
   return 0;
 }

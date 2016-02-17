@@ -4,7 +4,9 @@ CFLAGS=-std=c11 -Wall -Wextra -g
 TARGET_NAME=pluggable-server
 
 SOURCE_FILES=\
-	src/main.c
+	src/main.c \
+	src/server/open_listen_socket.c \
+	src/server/handle_requests.c
 
 INCLUDE_DIRECTORIES=
 
