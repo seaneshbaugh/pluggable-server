@@ -6,14 +6,24 @@
 
 __attribute__((constructor))
 static void initializer(void) {
-  printf("[%s] initializer()\n", __FILE__);
 }
 
 __attribute__((destructor))
 static void finalizer(void) {
-  printf("[%s] finalizer()\n", __FILE__);
 }
 
-EXPORT int addOne(const int number) {
-  return number + 1;
+EXPORT int testPlugInit(Plug* plug) {
+  plug->process = process;
+
+  return 0;
+}
+
+int process(Request* request) {
+  request->processedData = malloc(5);
+
+  strcpy(request->processedData, "test");
+
+  request->finished = 1;
+
+  return 0;
 }

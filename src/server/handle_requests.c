@@ -1,6 +1,6 @@
 #include "../server.h"
 
-void handleRequests(const int listenSocketFileDescriptor) {
+void handleRequests(const int listenSocketFileDescriptor, PlugManager* plugManager) {
   int clients[MAX_CONNECTIONS];
 
   for (size_t i = 0; i < MAX_CONNECTIONS; i += 1) {
@@ -21,6 +21,7 @@ void handleRequests(const int listenSocketFileDescriptor) {
     } else {
       if (fork() == 0) {
 
+        // This is awful. Need to figure out how to receive things in multiple chunks.
         char message[1025];
 
         memset((void*)message, (int)'\0', 1025);
@@ -33,9 +34,17 @@ void handleRequests(const int listenSocketFileDescriptor) {
           if (received == 0) {
             fprintf(stderr, "Client disconnected uexpectedly\n");
           } else {
-            printf("%s", message);
+            // printf("%s", message);
 
-            write(clients[slot], "HELLO!", 6);
+            Request* request = NULL;
+
+            initRequest(&request, message, received);
+
+            processRequest(plugManager, request);
+
+            write(clients[slot], request->processedData, strlen(request->processedData));
+
+            freeRequest(request);
           }
         }
 

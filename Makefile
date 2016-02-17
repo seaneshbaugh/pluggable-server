@@ -5,6 +5,9 @@ TARGET_NAME=pluggable-server
 
 SOURCE_FILES=\
 	src/main.c \
+	src/plug_manager.c \
+	src/plug.c \
+	src/request.c \
 	src/server/open_listen_socket.c \
 	src/server/handle_requests.c
 
@@ -29,4 +32,5 @@ clean:
 
 plugs:
 	mkdir -p build/plugs
-	$(CC) $(CFLAGS) -dynamiclib  src/plugs/test_plug.c -current_version 1.0 -compatibility_version 1.0 -fvisibility=hidden -o build/plugs/libTestPlug.A.dylib
+	$(CC) $(CFLAGS) -dynamiclib src/plugs/test_plug.c -current_version 1.0 -compatibility_version 1.0 -fvisibility=hidden -o build/plugs/libtestPlug.A.dylib
+	$(CC) $(CFLAGS) -dynamiclib src/plugs/daytime_plug.c -current_version 1.0 -compatibility_version 1.0 -fvisibility=hidden -o build/plugs/libdaytimePlug.A.dylib

@@ -7,9 +7,10 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include "plug_manager.h"
 
 #define MAX_CONNECTIONS 1024
 
 int openListenSocket(const char* port);
 
-void handleRequests(const int listenSocketFileDescriptor);
+void handleRequests(const int listenSocketFileDescriptor, PlugManager* plugManager);

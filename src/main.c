@@ -1,36 +1,22 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "plug_manager.h"
 #include "server.h"
 
-typedef int (*FP)(int number);
-
 int main(int argc, char** argv) {
-  void* libHandle = dlopen("./plugs/libTestPlug.A.dylib", RTLD_NOW);
+  PlugManager* plugManager = NULL;
 
-  if (libHandle == NULL) {
-    fprintf(stderr, "%s\n", dlerror());
+  initPlugManager(&plugManager);
 
-    exit(EXIT_FAILURE);
-  }
-
-  FP addOne = (FP)(intptr_t)dlsym(libHandle, "addOne");
-
-  if (addOne == NULL) {
-    fprintf(stderr, "%s\n", dlerror());
-
-    dlclose(libHandle);
-
-    exit(EXIT_FAILURE);
-  }
-
-  printf("1 + 1 = %d\n", addOne(1));
-
-  dlclose(libHandle);
+  addPlug(plugManager, "daytime");
 
   int listenSocketFileDescriptor = openListenSocket("10000");
 
-  handleRequests(listenSocketFileDescriptor);
+  // Need to handle signals here so we can actually gracefully shut down.
+  handleRequests(listenSocketFileDescriptor, plugManager);
+
+  freePlugManager(plugManager);
 
   return 0;
 }
